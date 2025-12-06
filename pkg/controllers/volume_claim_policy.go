@@ -42,17 +42,16 @@ func (r *JobSetReconciler) createPVCsIfNecessary(ctx context.Context, js *jobset
 	log := ctrl.LoggerFrom(ctx)
 
 	for _, template := range volumeClaimPolicy.Templates {
-		pvcName := generatePVCName(js.Name, template.Name)
 
-		// Add JobSet name label
+		// Add JobSet name label.
 		labels := make(map[string]string)
 		maps.Copy(labels, template.Labels)
 		labels[jobset.JobSetNameKey] = js.Name
 
-		// Create new PVC based on template
+		// Create new PVC based on template.
 		pvc := corev1.PersistentVolumeClaim{
 			ObjectMeta: metav1.ObjectMeta{
-				Name:        pvcName,
+				Name:        generatePVCName(js.Name, template.Name),
 				Namespace:   js.Namespace,
 				Labels:      labels,
 				Annotations: template.Annotations,
@@ -69,9 +68,7 @@ func (r *JobSetReconciler) createPVCsIfNecessary(ctx context.Context, js *jobset
 
 		// Create PVC if it doesn't exist.
 		if err := r.Create(ctx, &pvc); err != nil {
-			if apierrors.IsAlreadyExists(err) {
-				log.V(2).Info("skip PVC creation since it already exists", "pvc", klog.KObj(&pvc))
-			} else {
+			if !apierrors.IsAlreadyExists(err) {
 				r.Record.Eventf(js, corev1.EventTypeWarning, constants.PVCCreationFailedReason, err.Error())
 				return err
 			}
