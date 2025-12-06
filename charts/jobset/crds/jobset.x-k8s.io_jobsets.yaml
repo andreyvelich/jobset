@@ -9500,7 +9500,7 @@ spec:
                         whenDeleted:
                           default: Delete
                           description: whenDeleted specifies what happens to PVCs
-                            when the JobSet is deleted.
+                            when JobSet is deleted.
                           enum:
                           - Delete
                           - Retain
@@ -9952,8 +9952,11 @@ spec:
                                 type: string
                             type: object
                         type: object
+                      maxItems: 50
                       type: array
+                      x-kubernetes-list-type: atomic
                   type: object
+                maxItems: 50
                 type: array
                 x-kubernetes-list-type: atomic
                 x-kubernetes-validations:

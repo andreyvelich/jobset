@@ -748,6 +748,11 @@ func schema_jobset_api_jobset_v1alpha2_VolumeClaimPolicy(ref common.ReferenceCal
 				Type:        []string{"object"},
 				Properties: map[string]spec.Schema{
 					"templates": {
+						VendorExtensible: spec.VendorExtensible{
+							Extensions: spec.Extensions{
+								"x-kubernetes-list-type": "atomic",
+							},
+						},
 						SchemaProps: spec.SchemaProps{
 							Description: "templates is a list of shared PVC claims that ReplicatedJobs are allowed to reference. The JobSet controller is responsible for creating shared PVCs that can be mounted by multiple ReplicatedJobs. Every claim in this list must have a matching (by name) volumeMount in one container or initContainer in at least one ReplicatedJob template. ReplicatedJob template must not have volumes with the same name as defined in this template. Generated PVC naming convention: <claim-name>-<jobset-name> Example: \"model-cache-trainjob\" (shared volume across all ReplicatedJobs).",
 							Type:        []string{"array"},
@@ -784,7 +789,7 @@ func schema_jobset_api_jobset_v1alpha2_VolumeRetentionPolicy(ref common.Referenc
 				Properties: map[string]spec.Schema{
 					"whenDeleted": {
 						SchemaProps: spec.SchemaProps{
-							Description: "whenDeleted specifies what happens to PVCs when the JobSet is deleted.",
+							Description: "whenDeleted specifies what happens to PVCs when JobSet is deleted.",
 							Type:        []string{"string"},
 							Format:      "",
 						},

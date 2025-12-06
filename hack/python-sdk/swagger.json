@@ -435,7 +435,8 @@
           "items": {
             "default": {},
             "$ref": "https://raw.githubusercontent.com/kubernetes/kubernetes/refs/tags/v1.34.2/api/openapi-spec/swagger.json#/definitions/io.k8s.api.core.v1.PersistentVolumeClaim"
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       }
     },
@@ -444,7 +445,7 @@
       "type": "object",
       "properties": {
         "whenDeleted": {
-          "description": "whenDeleted specifies what happens to PVCs when the JobSet is deleted.",
+          "description": "whenDeleted specifies what happens to PVCs when JobSet is deleted.",
           "type": "string"
         }
       }

@@ -168,6 +168,7 @@ type JobSetSpec struct {
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable"
 	// +optional
 	// +listType=atomic
+	// +kubebuilder:validation:MaxItems=50
 	VolumeClaimPolicies []VolumeClaimPolicy `json:"volumeClaimPolicies,omitempty"`
 }
 
@@ -477,6 +478,8 @@ type VolumeClaimPolicy struct {
 	// ReplicatedJob template must not have volumes with the same name as defined in this template.
 	// Generated PVC naming convention: <claim-name>-<jobset-name>
 	// Example: "model-cache-trainjob" (shared volume across all ReplicatedJobs).
+	// +kubebuilder:validation:MaxItems=50
+	// +listType=atomic
 	Templates []corev1.PersistentVolumeClaim `json:"templates,omitempty"`
 
 	// retentionPolicy describes the lifecycle of persistent volume claims created from the template.
@@ -485,10 +488,9 @@ type VolumeClaimPolicy struct {
 	RetentionPolicy *VolumeRetentionPolicy `json:"retentionPolicy,omitempty"`
 }
 
-// volumeRetentionPolicy defines the retention policy used for PVCs created from
-// the JobSet VolumeClaimPolicies.
+// volumeRetentionPolicy defines the retention policy used for PVCs created from the JobSet VolumeClaimPolicies.
 type VolumeRetentionPolicy struct {
-	// whenDeleted specifies what happens to PVCs when the JobSet is deleted.
+	// whenDeleted specifies what happens to PVCs when JobSet is deleted.
 	// +kubebuilder:validation:Enum=Delete;Retain
 	// +kubebuilder:default=Delete
 	WhenDeleted RetentionPolicyType `json:"whenDeleted,omitempty"`

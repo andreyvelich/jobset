@@ -472,7 +472,6 @@ func validateVolumeClaimPolicies(js *jobset.JobSet, volumeClaimPolicies []jobset
 			if err := validateReplicatedJobsVolumeClaims(js.Spec.ReplicatedJobs, template.Name); err != nil {
 				allErrs = append(allErrs, err...)
 			}
-
 			claimNames.Insert(template.Name)
 		}
 	}

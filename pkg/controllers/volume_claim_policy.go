@@ -20,21 +20,13 @@ import (
 // reconcileVolumeClaimPolicies creates PVCs using volumeClaimPolicies.
 func (r *JobSetReconciler) reconcileVolumeClaimPolicies(ctx context.Context, js *jobset.JobSet) error {
 	var allErrors []error
-
 	// Create PVC for each volume claim policy.
 	for _, volumeClaimPolicy := range js.Spec.VolumeClaimPolicies {
 		if err := r.createPVCsIfNecessary(ctx, js, volumeClaimPolicy); err != nil {
 			allErrors = append(allErrors, err)
 		}
-
 	}
-
 	return errors.Join(allErrors...)
-}
-
-// generateSharedPVCName creates a name for the PVC in this format: <pvc-template-name>-<jobset-name>
-func generatePVCName(jobSetName, pvcTemplateName string) string {
-	return fmt.Sprintf("%s-%s", pvcTemplateName, jobSetName)
 }
 
 // createPVCsIfNecessary creates PVCs if it doesn't exist.
@@ -42,7 +34,6 @@ func (r *JobSetReconciler) createPVCsIfNecessary(ctx context.Context, js *jobset
 	log := ctrl.LoggerFrom(ctx)
 
 	for _, template := range volumeClaimPolicy.Templates {
-
 		// Add JobSet name label.
 		labels := make(map[string]string)
 		maps.Copy(labels, template.Labels)
@@ -67,6 +58,7 @@ func (r *JobSetReconciler) createPVCsIfNecessary(ctx context.Context, js *jobset
 		}
 
 		// Create PVC if it doesn't exist.
+		// TODO (andreyvelich): Shall we consider to use workqueue.ParallelizeUntil, similar to rJobs creation?
 		if err := r.Create(ctx, &pvc); err != nil {
 			if !apierrors.IsAlreadyExists(err) {
 				r.Record.Eventf(js, corev1.EventTypeWarning, constants.PVCCreationFailedReason, err.Error())
@@ -78,6 +70,11 @@ func (r *JobSetReconciler) createPVCsIfNecessary(ctx context.Context, js *jobset
 	}
 
 	return nil
+}
+
+// generateSharedPVCName creates a name for the PVC in this format: <pvc-template-name>-<jobset-name>
+func generatePVCName(jobSetName, pvcTemplateName string) string {
+	return fmt.Sprintf("%s-%s", pvcTemplateName, jobSetName)
 }
 
 // addVolumes adds volumes and volumeMounts to the Job spec.
@@ -121,6 +118,5 @@ func hasVolumeMount(job *batchv1.Job, volumeMountName string) bool {
 			}
 		}
 	}
-
 	return false
 }

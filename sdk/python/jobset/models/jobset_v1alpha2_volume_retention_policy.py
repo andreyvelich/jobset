@@ -26,7 +26,7 @@ class JobsetV1alpha2VolumeRetentionPolicy(BaseModel):
     """
     volumeRetentionPolicy defines the retention policy used for PVCs created from the JobSet VolumeClaimPolicies.
     """ # noqa: E501
-    when_deleted: Optional[StrictStr] = Field(default=None, description="whenDeleted specifies what happens to PVCs when the JobSet is deleted.", alias="whenDeleted")
+    when_deleted: Optional[StrictStr] = Field(default=None, description="whenDeleted specifies what happens to PVCs when JobSet is deleted.", alias="whenDeleted")
     __properties: ClassVar[List[str]] = ["whenDeleted"]
 
     model_config = ConfigDict(
