@@ -17,15 +17,16 @@ package v1alpha2
 // JobSetSpecApplyConfiguration represents a declarative configuration of the JobSetSpec type for use
 // with apply.
 type JobSetSpecApplyConfiguration struct {
-	ReplicatedJobs          []ReplicatedJobApplyConfiguration `json:"replicatedJobs,omitempty"`
-	Network                 *NetworkApplyConfiguration        `json:"network,omitempty"`
-	SuccessPolicy           *SuccessPolicyApplyConfiguration  `json:"successPolicy,omitempty"`
-	FailurePolicy           *FailurePolicyApplyConfiguration  `json:"failurePolicy,omitempty"`
-	StartupPolicy           *StartupPolicyApplyConfiguration  `json:"startupPolicy,omitempty"`
-	Suspend                 *bool                             `json:"suspend,omitempty"`
-	Coordinator             *CoordinatorApplyConfiguration    `json:"coordinator,omitempty"`
-	ManagedBy               *string                           `json:"managedBy,omitempty"`
-	TTLSecondsAfterFinished *int32                            `json:"ttlSecondsAfterFinished,omitempty"`
+	ReplicatedJobs          []ReplicatedJobApplyConfiguration     `json:"replicatedJobs,omitempty"`
+	Network                 *NetworkApplyConfiguration            `json:"network,omitempty"`
+	SuccessPolicy           *SuccessPolicyApplyConfiguration      `json:"successPolicy,omitempty"`
+	FailurePolicy           *FailurePolicyApplyConfiguration      `json:"failurePolicy,omitempty"`
+	StartupPolicy           *StartupPolicyApplyConfiguration      `json:"startupPolicy,omitempty"`
+	Suspend                 *bool                                 `json:"suspend,omitempty"`
+	Coordinator             *CoordinatorApplyConfiguration        `json:"coordinator,omitempty"`
+	ManagedBy               *string                               `json:"managedBy,omitempty"`
+	TTLSecondsAfterFinished *int32                                `json:"ttlSecondsAfterFinished,omitempty"`
+	VolumeClaimPolicies     []VolumeClaimPolicyApplyConfiguration `json:"volumeClaimPolicies,omitempty"`
 }
 
 // JobSetSpecApplyConfiguration constructs a declarative configuration of the JobSetSpec type for use with
@@ -108,5 +109,18 @@ func (b *JobSetSpecApplyConfiguration) WithManagedBy(value string) *JobSetSpecAp
 // If called multiple times, the TTLSecondsAfterFinished field is set to the value of the last call.
 func (b *JobSetSpecApplyConfiguration) WithTTLSecondsAfterFinished(value int32) *JobSetSpecApplyConfiguration {
 	b.TTLSecondsAfterFinished = &value
+	return b
+}
+
+// WithVolumeClaimPolicies adds the given value to the VolumeClaimPolicies field in the declarative configuration
+// and returns the receiver, so that objects can be build by chaining "With" function invocations.
+// If called multiple times, values provided by each call will be appended to the VolumeClaimPolicies field.
+func (b *JobSetSpecApplyConfiguration) WithVolumeClaimPolicies(values ...*VolumeClaimPolicyApplyConfiguration) *JobSetSpecApplyConfiguration {
+	for i := range values {
+		if values[i] == nil {
+			panic("nil value passed to WithVolumeClaimPolicies")
+		}
+		b.VolumeClaimPolicies = append(b.VolumeClaimPolicies, *values[i])
+	}
 	return b
 }
